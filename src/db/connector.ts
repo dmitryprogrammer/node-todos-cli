@@ -9,10 +9,11 @@ export type Task = {
 export class Connector {
   private readonly dbPath = join(__dirname, "./tasks.db.json");
 
-  async getTaskToDb(taskTitle: Task["title"]) {
+  async getTasksList(): Promise<Task | string> {
     try {
-      const task = await readFile(this.dbPath, "utf-8");
-      console.log(task);
+      const tasks = await readFile(this.dbPath, "utf-8");
+
+      return JSON.parse(tasks);
     } catch (error) {
       console.error(error);
     }
