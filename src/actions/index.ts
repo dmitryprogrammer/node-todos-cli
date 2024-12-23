@@ -1,4 +1,4 @@
-export * from "./add.action";
+import { add } from "./add.action";
 
 export enum ACTION_NAMES {
   ADD = "add",
@@ -6,3 +6,7 @@ export enum ACTION_NAMES {
   DELETE = "delete",
   LIST = "list",
 }
+
+export const actions = {
+  add,
+};

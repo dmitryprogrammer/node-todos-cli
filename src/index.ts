@@ -1,9 +1,3 @@
-import {Connector} from "./db/connector";
+import {actions} from "./actions";
 
-const connection = new Connector();
-
-connection.getTaskToDb("Test");
-connection.writeTaskToDb({
-  title: "Test",
-  id: 1,
-});
+actions.add("tesst 1");
