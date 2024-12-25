@@ -1,6 +1,6 @@
 {
-    "verbose": true,
-    "ignore": ["./node_modules"],
-    "ext": ".js,.ts",
-    "exec": "npx tsc"
+  "verbose": false,
+  "ignore": ["./node_modules"],
+  "ext": ".js,.ts",
+  "exec": "ts-node ./src/index.ts hey --first -second"
 }
