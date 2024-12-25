@@ -1,34 +1,61 @@
 import {readFile, writeFile} from "fs/promises";
 import {join} from "path";
+import {json} from "stream/consumers";
 
 export type Task = {
   id: number;
   title: string;
 };
 
+export type Tasks = Task[];
+
 export class Connector {
   private readonly dbPath = join(__dirname, "./tasks.db.json");
+  private readonly encoding = "utf-8";
+  private tsksList: Tasks = [];
 
-  async getTasksList(): Promise<Task | string> {
+  async getTasksList(): Promise<Tasks> {
     try {
-      const tasks = await readFile(this.dbPath, "utf-8");
+      const tasksJson = await readFile(this.dbPath, this.encoding);
+      const tasks = JSON.parse(tasksJson);
+      this.updateTasksList(tasks);
 
-      return JSON.parse(tasks);
+      return tasks;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async writeTaskToDb(task: Task) {
+  async getTask(title: Task["title"]): Promise<Task> {
     try {
-      const result = await writeFile(
-        this.dbPath,
-        JSON.stringify(task),
-        "utf-8",
-      );
-      console.log(result);
+      const tasks = await this.getTasksList();
+      const task = tasks.find((task) => task.title === title);
+
+      return task;
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async writeTaskToDb(task: Task): Promise<void> {
+    try {
+      let tasks: Tasks = await this.getTasksList();
+      if (!tasks || !Array.isArray(tasks)) {
+        tasks = [];
+      }
+      if (!tasks.find(({title}: Task) => title === task.title)) {
+        tasks.push(task);
+      }
+
+      await writeFile(this.dbPath, JSON.stringify(tasks), this.encoding);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private updateTasksList(tasks: Tasks): void {
+    if (tasks) {
+      this.tsksList = tasks;
     }
   }
 }
