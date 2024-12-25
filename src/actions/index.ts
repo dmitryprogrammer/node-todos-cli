@@ -1,4 +1,4 @@
-import { add } from "./add.action";
+import {add, getTasksList} from "./add.action";
 
 export enum ACTION_NAMES {
   ADD = "add",
@@ -9,4 +9,5 @@ export enum ACTION_NAMES {
 
 export const actions = {
   add,
+  getTasksList,
 };
