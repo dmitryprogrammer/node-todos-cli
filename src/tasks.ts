@@ -7,7 +7,7 @@ class Tasks<Connector, ActionNames> {
     this.connection = connection;
   }
 
-  action(name: ActionNames) {}
+  // action(name: ActionNames) {}
 }
 
 export const tasks = new Tasks<Connector, ACTION_NAMES>(new Connector());
