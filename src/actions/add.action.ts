@@ -6,6 +6,7 @@ export function add(title: Task["title"]): void {
     throw new Error("Need title for task");
     return;
   }
+  console.log("2");
 
   dbConnector.writeTaskToDb({title, id: 1});
 }
