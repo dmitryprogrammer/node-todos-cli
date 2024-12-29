@@ -1,16 +1,22 @@
 import {dbConnector} from "../db";
 import {Task, Tasks} from "../db/connector";
+import {successLog} from "../utils/log.util";
 
 export function add(title: Task["title"]): void {
   if (!title) {
     throw new Error("Need title for task");
     return;
   }
-  console.log("2");
 
-  dbConnector.writeTaskToDb({title, id: 1});
+  dbConnector.writeTaskToDb(title).then(() => {
+    successLog(`Task ${title} was added successfully`);
+  });
 }
 
 export function getTasksList(): Promise<Tasks> {
   return dbConnector.getTasksList();
+}
+
+export function clearTasks(): Promise<void> {
+  return dbConnector.clearTasks();
 }
