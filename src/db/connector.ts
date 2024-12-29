@@ -1,5 +1,6 @@
-import {readFile, writeFile} from "fs/promises";
+import {readFile, truncate, writeFile} from "fs/promises";
 import {join} from "path";
+import { errorLog } from "../utils/log.util";
 
 export type Task = {
   id: number;
@@ -16,12 +17,16 @@ export class Connector {
   async getTasksList(): Promise<Tasks> {
     try {
       const tasksJson = await readFile(this.dbPath, this.encoding);
-      const tasks = JSON.parse(tasksJson);
-      this.updateTasksList(tasks);
+      if (tasksJson) {
+        const tasks = JSON.parse(tasksJson);
+        this.updateTasksList(tasks);
 
-      return tasks;
+        return tasks;
+      }
+
+      return null;
     } catch (error) {
-      console.error(error);
+      errorLog(error);
     }
   }
 
@@ -32,23 +37,36 @@ export class Connector {
 
       return task;
     } catch (error) {
-      console.error(error);
+      errorLog(error);
     }
   }
 
-  async writeTaskToDb(task: Task): Promise<void> {
+  async writeTaskToDb(taskTitle: Task["title"]): Promise<void> {
     try {
       let tasks: Tasks = await this.getTasksList();
+      let taskId = 0;
       if (!tasks || !Array.isArray(tasks)) {
         tasks = [];
       }
-      if (!tasks.find(({title}: Task) => title === task.title)) {
-        tasks.push(task);
+      if (tasks) {
+        const lastTaskId = tasks.at(-1)?.id ?? 0;
+        taskId = lastTaskId + 1;
+      }
+      if (!tasks.find(({title}: Task) => title === taskTitle)) {
+        tasks.push({title: taskTitle, id: taskId});
       }
 
       await writeFile(this.dbPath, JSON.stringify(tasks), this.encoding);
     } catch (error) {
-      console.error(error);
+      errorLog(error);
+    }
+  }
+
+  async clearTasks(): Promise<void> {
+    try {
+      await truncate(this.dbPath);
+    } catch (error) {
+      errorLog(error);
     }
   }
 
