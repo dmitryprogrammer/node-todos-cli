@@ -72,10 +72,7 @@ export class Connector {
     }
   }
 
-  private async updateTask(
-    taskTitle: TaskTitle,
-    newTitle: TaskTitle,
-  ): Promise<void> {
+  async updateTask(taskTitle: TaskTitle, newTitle: TaskTitle): Promise<void> {
     const tasks = await this.getTasksList();
     if (tasks) {
       const updatingTask = this.findTaskInTasksList(taskTitle, tasks);
@@ -88,10 +85,20 @@ export class Connector {
     }
   }
 
-  private async delete(taskTitle: TaskTitle): Promise<void> {
+  updateTasksList(tasks: Tasks): void {
+    if (tasks?.length) {
+      this.tsksList = tasks;
+    }
+  }
+
+  async deleteTaskFromDb(taskTitle: TaskTitle): Promise<void> {
     const tasks = await this.getTasksList();
     if (tasks) {
-      const deletingTask = this.findTaskInTasksList(taskTitle, tasks);
+      const deletingTask = this.findIndexTaskInTasksList(taskTitle, tasks);
+      if (deletingTask !== -1) {
+        tasks.splice(deletingTask, 1);
+        await writeFile(this.dbPath, JSON.stringify(tasks), this.encoding);
+      }
     }
   }
 
