@@ -2,5 +2,5 @@
   "verbose": false,
   "ignore": ["./node_modules"],
   "ext": ".js,.ts",
-  "exec": "ts-node ./src/index.ts hey --first -second"
+  "exec": "ts-node ./src/index.ts list"
 }
