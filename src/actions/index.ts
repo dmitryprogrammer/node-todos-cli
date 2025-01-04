@@ -4,6 +4,7 @@ export type ACTION_NAMES = "add" | "get" | "delete" | "list";
 
 export const actions = {
   add,
+  delete,
   getTasksList,
   clearTasks,
 };
