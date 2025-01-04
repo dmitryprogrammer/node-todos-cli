@@ -1,6 +1,6 @@
 import {readFile, truncate, writeFile} from "fs/promises";
 import {join} from "path";
-import { errorLog } from "../utils/log.util";
+import {errorLog} from "../utils/log.util";
 
 export type Task = {
   id: number;
@@ -8,6 +8,8 @@ export type Task = {
 };
 
 export type Tasks = Task[];
+
+export type TaskTitle = Task["title"];
 
 export class Connector {
   private readonly dbPath = join(__dirname, "./tasks.db.json");
@@ -30,10 +32,10 @@ export class Connector {
     }
   }
 
-  async getTask(title: Task["title"]): Promise<Task> {
+  async getTask(title: TaskTitle): Promise<Task> {
     try {
       const tasks = await this.getTasksList();
-      const task = tasks.find((task) => task.title === title);
+      const task = this.findTaskInTasksList(title, tasks);
 
       return task;
     } catch (error) {
@@ -41,7 +43,7 @@ export class Connector {
     }
   }
 
-  async writeTaskToDb(taskTitle: Task["title"]): Promise<void> {
+  async writeTaskToDb(taskTitle: TaskTitle): Promise<void> {
     try {
       let tasks: Tasks = await this.getTasksList();
       let taskId = 0;
@@ -52,7 +54,7 @@ export class Connector {
         const lastTaskId = tasks.at(-1)?.id ?? 0;
         taskId = lastTaskId + 1;
       }
-      if (!tasks.find(({title}: Task) => title === taskTitle)) {
+      if (!this.findTaskInTasksList(taskTitle, tasks)) {
         tasks.push({title: taskTitle, id: taskId});
       }
 
@@ -70,9 +72,50 @@ export class Connector {
     }
   }
 
-  private updateTasksList(tasks: Tasks): void {
+  private async updateTask(
+    taskTitle: TaskTitle,
+    newTitle: TaskTitle,
+  ): Promise<void> {
+    const tasks = await this.getTasksList();
     if (tasks) {
+      const updatingTask = this.findTaskInTasksList(taskTitle, tasks);
+      if (updatingTask) {
+        updatingTask.title = newTitle;
+        await writeFile(this.dbPath, JSON.stringify(tasks), this.encoding);
+      }
+
       this.tsksList = tasks;
     }
+  }
+
+  private async delete(taskTitle: TaskTitle): Promise<void> {
+    const tasks = await this.getTasksList();
+    if (tasks) {
+      const deletingTask = this.findTaskInTasksList(taskTitle, tasks);
+    }
+  }
+
+  private findTaskInTasksList(
+    taskTitle: TaskTitle,
+    customTasksList?: Tasks,
+  ): Task {
+    const tasksList = customTasksList ?? this.tsksList;
+    return tasksList.find((task: Task) =>
+      this.findTaskCallback(task, taskTitle),
+    );
+  }
+
+  private findIndexTaskInTasksList(
+    taskTitle: TaskTitle,
+    customTasksList?: Tasks,
+  ): number {
+    const tasksList = customTasksList ?? this.tsksList;
+    return tasksList.findIndex((task: Task) =>
+      this.findTaskCallback(task, taskTitle),
+    );
+  }
+
+  private findTaskCallback({title}: Task, taskTitle: TaskTitle) {
+    return title === taskTitle;
   }
 }
