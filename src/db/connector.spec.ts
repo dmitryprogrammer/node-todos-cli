@@ -38,4 +38,10 @@ describe("Connector specs", () => {
       {title: secondTaskTitle, id: 2},
     ]);
   });
+
+  it("should delete task", async () => {
+    await connector.deleteTaskFromDb("Updated task title");
+    const tasks: Tasks = await connector.getTasksList();
+    expect(tasks).toEqual([{title: secondTaskTitle, id: 2}]);
+  });
 });
