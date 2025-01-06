@@ -28,4 +28,14 @@ describe("Connector specs", () => {
       {title: secondTaskTitle, id: 2},
     ]);
   });
+
+  it("should update task", async () => {
+    const newTaskTitle = "Updated task title";
+    await connector.updateTask(taskTitle, newTaskTitle);
+    const tasks: Tasks = await connector.getTasksList();
+    expect(tasks).toEqual([
+      {title: newTaskTitle, id: 1},
+      {title: secondTaskTitle, id: 2},
+    ]);
+  });
 });
