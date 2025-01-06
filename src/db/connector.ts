@@ -85,7 +85,7 @@ export class Connector {
     }
   }
 
-  updateTasksList(tasks: Tasks): void {
+  private updateTasksList(tasks: Tasks): void {
     if (tasks?.length) {
       this.tsksList = tasks;
     }
