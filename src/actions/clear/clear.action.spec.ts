@@ -3,11 +3,10 @@ import {clearTasks} from "./clear.action";
 
 describe("clear tasks action spec", () => {
   it("should clear tasks", async () => {
-    clearTasks();
-    setTimeout(() => {
-      const tasksList = dbConnector.getTasksList();
+    await clearTasks();
 
-      expect(tasksList).toEqual({});
-    }, 100);
+    const tasksList = await dbConnector.getTasksList();
+
+    expect(tasksList).toEqual(null);
   });
 });
