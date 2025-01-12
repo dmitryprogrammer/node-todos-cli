@@ -1,6 +1,6 @@
-import {dbConnector} from "../db";
-import {Task} from "../db/connector";
-import {successLog} from "../utils/log.util";
+import {dbConnector} from "../../db";
+import {Task} from "../../db/connector";
+import {successLog} from "../../utils/log.util";
 
 export function add(title: Task["title"]): void {
   if (!title) {

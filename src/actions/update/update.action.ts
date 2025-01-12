@@ -1,6 +1,6 @@
-import {dbConnector} from "../db";
-import {TaskTitle} from "../db/connector";
-import {successLog} from "../utils/log.util";
+import {dbConnector} from "../../db";
+import {TaskTitle} from "../../db/connector";
+import {successLog} from "../../utils/log.util";
 
 export function update(title: TaskTitle, newTitle: TaskTitle): void {
   if (!title) {
