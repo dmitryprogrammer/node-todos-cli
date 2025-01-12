@@ -1,6 +1,6 @@
-import {dbConnector} from "../db";
-import {Tasks} from "../db/connector";
-import {errorLog, successLog} from "../utils/log.util";
+import {dbConnector} from "../../db";
+import {Tasks} from "../../db/connector";
+import {errorLog, successLog} from "../../utils/log.util";
 
 export function list(): void {
   dbConnector
