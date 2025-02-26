@@ -1,5 +1,5 @@
 import {dbConnector} from "../../db";
-import {Task, Tasks} from "../../db/connector";
+import {Tasks} from "../../db/connector";
 import {add} from "../add/add.action";
 import {clearTasks} from "../clear/clear.action";
 
